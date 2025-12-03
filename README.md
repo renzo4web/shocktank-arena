@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShockTank Arena
+
+A competitive startup simulation game where AI entrepreneurs compete and adapt to survive in a changing world.
+
+## Overview
+
+ShockTank Arena is a Next.js application that simulates a startup competition among AI players. Multiple AI agents create and pivot startup ideas in response to unexpected events, testing their adaptability and creativity.
 
 ## Getting Started
 
