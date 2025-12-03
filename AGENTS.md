@@ -201,3 +201,7 @@ bd update <issue-id> --status in_progress
 - Use dependencies to prevent duplicate work
 - Add detailed descriptions to help other agents
 - Use `--json` flag for programmatic parsing
+- **UI Components**: ALWAYS check `components/ui` first. Use existing shadcn/ui components (Button, Card, etc.) before creating custom implementations. Do not reinvent the wheel or add custom CSS/Tailwind classes if a standard component variant exists.
+
+
+- Commit and code always in english
