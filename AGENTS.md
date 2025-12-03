@@ -1,0 +1,203 @@
+# Agent Guidelines for ShockTank Arena
+
+## Project Overview
+
+**ShockTank Arena** is a Next.js 16 application using:
+- **Next.js App Router** (React 19)
+- **TypeScript** for type safety
+- **Tailwind CSS 4** for styling
+- **Beads** for AI-native issue tracking
+
+All issues are tracked in the `.beads/` directory and synced with git.
+Use always bd to track and create issues
+
+## Quick Commands for Agents
+
+### Creating Issues
+```bash
+bd create "Task description"
+bd create "Task description" -p 0 -t feature  # High priority feature
+bd create "Task description" -d "Detailed description" --assignee agent-name
+```
+
+### Finding Work
+```bash
+bd ready        # Show issues ready to work on (no blockers)
+bd list         # List all issues
+bd list --status open  # Filter by status
+bd show <issue-id>     # View issue details
+```
+
+### Managing Issues
+```bash
+bd update <issue-id> --status in_progress   # Claim work
+bd update <issue-id> --status done          # Mark complete
+bd close <issue-id>                         # Close issue
+```
+
+### Dependencies
+```bash
+bd dep add <blocker-id> <blocked-id>  # Add blocking dependency
+bd dep tree <issue-id>                # View dependency tree
+bd dep cycles                         # Detect circular dependencies
+```
+
+## Workflow for Agents
+
+1. **Discover work**: Run `bd ready` to find unblocked tasks
+2. **Claim task**: Update status to `in_progress`
+3. **Create subtasks**: If discovering new work, create issues with dependencies
+4. **Complete work**: Update status to `done` or `bd close`
+5. **Sync**: Changes auto-sync to git (5s debounce)
+
+## Issue Types
+- `bug`: Something broken that needs fixing
+- `feature`: New functionality
+- `task`: General work item
+- `chore`: Maintenance or refactoring
+
+## Priority Levels (0-4)
+- 0: Critical (highest)
+- 1: High
+- 2: Medium (default)
+- 3: Low
+- 4: Lowest
+
+## Project Structure
+```
+shocktank-arena/
+├── .beads/           # Beads database and configuration
+├── app/              # Next.js App Router directory
+│   ├── layout.tsx    # Root layout (metadata, fonts)
+│   ├── page.tsx      # Home page (Server Component by default)
+│   └── globals.css   # Global Tailwind styles
+├── public/           # Static assets (images, fonts)
+├── package.json      # Dependencies (Next.js 16, React 19, Tailwind 4)
+└── AGENTS.md         # This file
+```
+
+## Next.js App Router Guidelines
+
+### File-based Routing
+- `app/page.tsx` → `/` (root route)
+- `app/about/page.tsx` → `/about`
+- `app/blog/[slug]/page.tsx` → `/blog/:slug` (dynamic route)
+- `app/api/route.ts` → API endpoint
+
+### Component Types
+- **Server Components** (default): Fetch data, no interactivity, smaller bundle
+- **Client Components**: Use `'use client'` directive for interactivity, hooks, browser APIs
+
+### Key Conventions
+- `layout.tsx`: Shared UI wrapper (preserves state, doesn't re-render)
+- `page.tsx`: Unique route content
+- `loading.tsx`: Suspense fallback UI
+- `error.tsx`: Error boundary for route segment
+- `not-found.tsx`: 404 page
+
+### Data Fetching
+```tsx
+// Server Component (recommended)
+async function Page() {
+  const data = await fetch('https://api.example.com/data', {
+    cache: 'force-cache' // or 'no-store', 'revalidate'
+  })
+  return <div>{data.title}</div>
+}
+```
+
+### Styling with Tailwind CSS 4
+- Use utility classes directly in JSX
+- Dark mode: `dark:` prefix (e.g., `dark:bg-black`)
+- Responsive: `sm:`, `md:`, `lg:`, `xl:` prefixes
+- Custom fonts via `next/font` (Geist Sans & Mono already configured)
+
+## Vercel AI SDK
+
+The project uses Vercel AI SDK for AI features. Install with: `pnpm add ai @ai-sdk/react zod`
+
+### Basic Patterns
+
+**Chat Interface (Client)**
+```tsx
+'use client';
+import { useChat } from '@ai-sdk/react';
+
+export default function Chat() {
+  const { messages, sendMessage } = useChat();
+  
+  return (
+    <div>
+      {messages.map(m => (
+        <div key={m.id}>
+          {m.parts.map((part, i) => {
+            if (part.type === 'text') return <div key={i}>{part.text}</div>;
+            if (part.type === 'tool-weather') return <pre key={i}>{JSON.stringify(part)}</pre>;
+          })}
+        </div>
+      ))}
+      <button onClick={() => sendMessage({ text: 'Hello' })}>Send</button>
+    </div>
+  );
+}
+```
+
+**API Route (Server)**
+```tsx
+// app/api/chat/route.ts
+import { streamText, convertToModelMessages, tool, stepCountIs } from 'ai';
+import { z } from 'zod';
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  
+  const result = streamText({
+    model: 'anthropic/claude-sonnet-4.5', // or use gateway('openai/gpt-5.1')
+    messages: convertToModelMessages(messages),
+    stopWhen: stepCountIs(5), // Allow multi-step tool use
+    tools: {
+      weather: tool({
+        description: 'Get weather in a location',
+        inputSchema: z.object({
+          location: z.string().describe('Location to check'),
+        }),
+        execute: async ({ location }) => {
+          // Your logic here
+          return { location, temperature: 72 };
+        },
+      }),
+    },
+  });
+  
+  return result.toUIMessageStreamResponse();
+}
+```
+
+### Key Concepts
+- **Message Parts**: `UIMessage` contains `parts[]` array (text, tool calls, etc.)
+- **Tools**: Define with `tool()`, model auto-invokes when needed
+- **Multi-step**: Set `stopWhen: stepCountIs(N)` for tool chains
+- **Providers**: Use Vercel AI Gateway or install specific providers (`@ai-sdk/openai`, etc.)
+- **Environment**: Set `AI_GATEWAY_API_KEY` in `.env.local`
+
+## Getting Started
+```bash
+# Initialize database (already done)
+bd init
+
+# Create your first issue
+bd create "Set up project infrastructure"
+
+# Check what's ready to work on
+bd ready
+
+# Start working
+bd update <issue-id> --status in_progress
+```
+
+## Tips for AI Agents
+- Always check `bd ready` before starting new work
+- Create issues when you discover related tasks
+- Use dependencies to prevent duplicate work
+- Add detailed descriptions to help other agents
+- Use `--json` flag for programmatic parsing
