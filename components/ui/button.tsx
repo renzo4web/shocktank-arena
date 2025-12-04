@@ -6,7 +6,8 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border bg-clip-padding font-medium text-sm outline-none transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  // Fizzy-inspired base: smooth transitions, brightness hover effects
+  "relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-xl border bg-clip-padding font-medium text-sm outline-none transition-all duration-100 ease-out before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-xl)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     defaultVariants: {
       size: "default",
@@ -15,31 +16,35 @@ const buttonVariants = cva(
     variants: {
       size: {
         default:
-          "min-h-8 px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)]",
-        icon: "size-8",
-        "icon-lg": "size-9",
-        "icon-sm": "size-7",
-        "icon-xl": "size-10 [&_svg:not([class*='size-'])]:size-4.5",
+          "min-h-9 px-4 py-2",
+        icon: "size-9",
+        "icon-lg": "size-10",
+        "icon-sm": "size-8",
+        "icon-xl": "size-11 [&_svg:not([class*='size-'])]:size-5",
         "icon-xs":
-          "size-6 rounded-md before:rounded-[calc(var(--radius-md)-1px)]",
-        lg: "min-h-9 px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2)-1px)]",
-        sm: "min-h-7 gap-1.5 px-[calc(--spacing(2.5)-1px)] py-[calc(--spacing(1)-1px)]",
-        xl: "min-h-10 px-[calc(--spacing(4)-1px)] py-[calc(--spacing(2)-1px)] text-base [&_svg:not([class*='size-'])]:size-4.5",
-        xs: "min-h-6 gap-1 rounded-md px-[calc(--spacing(2)-1px)] py-[calc(--spacing(1)-1px)] text-xs before:rounded-[calc(var(--radius-md)-1px)] [&_svg:not([class*='size-'])]:size-3",
+          "size-7 rounded-lg before:rounded-[calc(var(--radius-lg)-1px)]",
+        lg: "min-h-10 px-5 py-2.5 text-base",
+        sm: "min-h-8 gap-1.5 px-3 py-1.5",
+        xl: "min-h-11 px-6 py-3 text-base [&_svg:not([class*='size-'])]:size-5",
+        xs: "min-h-7 gap-1 rounded-lg px-2.5 py-1 text-xs before:rounded-[calc(var(--radius-lg)-1px)] [&_svg:not([class*='size-'])]:size-3",
       },
       variant: {
+        // Fizzy-style: brightness filter on hover instead of opacity changes
         default:
-          "not-disabled:inset-shadow-[0_1px_--theme(--color-white/16%)] border-primary bg-primary text-primary-foreground shadow-primary/24 shadow-xs hover:bg-primary/90 [&:is(:active,[data-pressed])]:inset-shadow-[0_1px_--theme(--color-black/8%)] [&:is(:disabled,:active,[data-pressed])]:shadow-none",
+          "border-primary bg-primary text-primary-foreground shadow-sm hover:brightness-110 active:brightness-95 active:scale-[0.98] [&:is(:disabled,:active,[data-pressed])]:shadow-none",
         destructive:
-          "not-disabled:inset-shadow-[0_1px_--theme(--color-white/16%)] border-destructive bg-destructive text-white shadow-destructive/24 shadow-xs hover:bg-destructive/90 [&:is(:active,[data-pressed])]:inset-shadow-[0_1px_--theme(--color-black/8%)] [&:is(:disabled,:active,[data-pressed])]:shadow-none",
+          "border-destructive bg-destructive text-white shadow-sm hover:brightness-110 active:brightness-95 active:scale-[0.98] [&:is(:disabled,:active,[data-pressed])]:shadow-none",
         "destructive-outline":
-          "border-border bg-transparent text-destructive-foreground shadow-xs not-disabled:not-active:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] dark:bg-input/32 dark:not-in-data-[slot=group]:bg-clip-border dark:not-disabled:before:shadow-[0_-1px_--theme(--color-white/4%)] dark:not-disabled:not-active:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/8%)] [&:is(:disabled,:active,[data-pressed])]:shadow-none [&:is(:hover,[data-pressed])]:border-destructive/32 [&:is(:hover,[data-pressed])]:bg-destructive/4",
-        ghost: "border-transparent hover:bg-accent data-pressed:bg-accent",
-        link: "border-transparent underline-offset-4 hover:underline",
+          "border-destructive/30 bg-transparent text-destructive-foreground hover:bg-destructive/8 hover:border-destructive/50 active:bg-destructive/12 dark:border-destructive/40 dark:hover:bg-destructive/16",
+        ghost: "border-transparent hover:bg-accent/80 active:bg-accent data-pressed:bg-accent",
+        link: "border-transparent underline-offset-4 hover:underline hover:opacity-80",
         outline:
-          "border-border bg-background shadow-xs not-disabled:not-active:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] dark:bg-input/32 dark:not-in-data-[slot=group]:bg-clip-border dark:not-disabled:before:shadow-[0_-1px_--theme(--color-white/4%)] dark:not-disabled:not-active:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/8%)] [&:is(:disabled,:active,[data-pressed])]:shadow-none [&:is(:hover,[data-pressed])]:bg-accent/50 dark:[&:is(:hover,[data-pressed])]:bg-input/64",
+          "border-border bg-background shadow-sm hover:bg-accent/50 hover:border-border/80 active:bg-accent/70 dark:bg-card dark:hover:bg-accent/30",
         secondary:
-          "border-secondary bg-secondary text-secondary-foreground hover:bg-secondary/90 data-pressed:bg-secondary/90",
+          "border-secondary bg-secondary text-secondary-foreground shadow-sm hover:brightness-95 active:brightness-90 data-pressed:brightness-90",
+        // Fizzy-inspired positive variant (green)
+        positive:
+          "border-success bg-success text-white shadow-sm hover:brightness-110 active:brightness-95 active:scale-[0.98]",
       },
     },
   },

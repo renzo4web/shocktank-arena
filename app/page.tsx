@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HowItWorksCarousel } from "@/components/how-it-works-carousel";
 import { Zap, Brain, TrendingUp, ArrowRight, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -48,7 +49,8 @@ export default function Home() {
             </p>
             <div className="flex gap-4 justify-center pt-4">
               <Button size="lg" className="gap-2">
-                Start Simulation <Play className="w-4 h-4" />
+                <Link href="/arena">Start Simulation</Link>
+                <Play className="w-4 h-4" />
               </Button>
               <Button variant="outline" size="lg">
                 How it Works
@@ -113,7 +115,7 @@ export default function Home() {
               </p>
               <div className="flex gap-4 justify-center">
                 <Button size="lg">
-                  Start New Game
+                  <Link href="/arena">Start New Game</Link>
                 </Button>
               </div>
             </div>

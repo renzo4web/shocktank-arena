@@ -40,9 +40,10 @@ function PopoverPopup({
       >
         <PopoverPrimitive.Popup
           className={cn(
-            "relative flex h-(--popup-height,auto) w-(--popup-width,auto) origin-(--transform-origin) rounded-lg border bg-popover bg-clip-padding text-popover-foreground shadow-lg transition-[width,height,scale,opacity] not-[class*='w-']:[min-w-80] before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] data-starting-style:scale-98 data-starting-style:opacity-0 dark:bg-clip-border dark:before:shadow-[0_-1px_--theme(--color-white/8%)]",
+            // Fizzy-style popover: generous radius, clean shadow
+            "relative flex h-(--popup-height,auto) w-(--popup-width,auto) origin-(--transform-origin) rounded-xl border border-border/50 bg-popover text-popover-foreground shadow-lg transition-all duration-100 ease-out not-[class*='w-']:[min-w-80] data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0 dark:shadow-xl dark:shadow-black/30",
             tooltipStyle &&
-              "w-fit text-balance rounded-md text-xs shadow-black/5 shadow-md before:rounded-[calc(var(--radius-md)-1px)]",
+              "w-fit text-balance rounded-lg text-xs shadow-md",
             className,
           )}
           data-slot="popover-popup"

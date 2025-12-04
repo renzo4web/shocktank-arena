@@ -1,7 +1,6 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export type StepStatus = "complete" | "current" | "upcoming";
 

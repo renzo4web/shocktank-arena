@@ -24,7 +24,8 @@ function DialogBackdrop({
   return (
     <DialogPrimitive.Backdrop
       className={cn(
-        "fixed inset-0 z-50 bg-black/32 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
+        // Fizzy-style backdrop: darker, smoother blur
+        "fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-all duration-150 ease-out data-ending-style:opacity-0 data-starting-style:opacity-0",
         className,
       )}
       data-slot="dialog-backdrop"
@@ -63,7 +64,8 @@ function DialogPopup({
       <DialogViewport>
         <DialogPrimitive.Popup
           className={cn(
-            "sm:-translate-y-[calc(1.25rem*var(--nested-dialogs))] relative row-start-2 flex max-h-full min-h-0 w-full min-w-0 flex-col border-t bg-popover bg-clip-padding text-popover-foreground opacity-[calc(1-0.1*var(--nested-dialogs))] shadow-lg transition-[scale,opacity,translate] duration-200 ease-in-out will-change-transform before:pointer-events-none before:absolute before:inset-0 before:shadow-[0_1px_--theme(--color-black/4%)] data-nested-dialog-open:origin-top data-ending-style:opacity-0 data-starting-style:opacity-0 max-sm:opacity-[calc(1-min(var(--nested-dialogs),1))] max-sm:data-ending-style:translate-y-4 max-sm:data-starting-style:translate-y-4 max-sm:before:hidden sm:max-w-lg sm:data-nested:data-ending-style:translate-y-8 sm:data-nested:data-starting-style:translate-y-8 sm:scale-[calc(1-0.1*var(--nested-dialogs))] sm:rounded-2xl sm:border sm:data-ending-style:scale-98 sm:data-starting-style:scale-98 sm:before:rounded-[calc(var(--radius-2xl)-1px)] dark:bg-clip-border dark:before:shadow-[0_-1px_--theme(--color-white/8%)]",
+            // Fizzy-style popup: generous radius, clean shadow, smooth animations
+            "sm:-translate-y-[calc(1.25rem*var(--nested-dialogs))] relative row-start-2 flex max-h-full min-h-0 w-full min-w-0 flex-col border-t bg-popover text-popover-foreground opacity-[calc(1-0.1*var(--nested-dialogs))] shadow-xl transition-all duration-150 ease-out will-change-transform data-nested-dialog-open:origin-top data-ending-style:opacity-0 data-starting-style:opacity-0 max-sm:opacity-[calc(1-min(var(--nested-dialogs),1))] max-sm:data-ending-style:translate-y-4 max-sm:data-starting-style:translate-y-4 sm:max-w-lg sm:data-nested:data-ending-style:translate-y-8 sm:data-nested:data-starting-style:translate-y-8 sm:scale-[calc(1-0.1*var(--nested-dialogs))] sm:rounded-2xl sm:border sm:border-border/50 sm:data-ending-style:scale-95 sm:data-starting-style:scale-95 dark:shadow-2xl dark:shadow-black/40",
             className,
           )}
           data-slot="dialog-popup"
@@ -71,7 +73,7 @@ function DialogPopup({
         >
           {children}
           {showCloseButton && (
-            <DialogPrimitive.Close className="absolute end-2 top-2 inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md border border-transparent opacity-72 outline-none transition-[color,background-color,box-shadow,opacity] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0">
+            <DialogPrimitive.Close className="absolute end-3 top-3 inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-muted-foreground outline-none transition-all duration-100 ease-out pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0">
               <XIcon />
               <span className="sr-only">Close</span>
             </DialogPrimitive.Close>
