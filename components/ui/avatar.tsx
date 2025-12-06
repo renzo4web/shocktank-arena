@@ -7,10 +7,18 @@ import { cn } from "@/lib/utils";
 function Avatar({ className, ...props }: AvatarPrimitive.Root.Props) {
   return (
     <AvatarPrimitive.Root
-      className={cn(
-        "inline-flex size-8 shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-background align-middle font-medium text-xs",
-        className,
-      )}
+      className={
+        typeof className === "function"
+          ? (state) =>
+              cn(
+                "inline-flex size-8 shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-background align-middle font-medium text-xs",
+                className(state),
+              )
+          : cn(
+              "inline-flex size-8 shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-background align-middle font-medium text-xs",
+              className,
+            )
+      }
       data-slot="avatar"
       {...props}
     />
@@ -20,7 +28,11 @@ function Avatar({ className, ...props }: AvatarPrimitive.Root.Props) {
 function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
   return (
     <AvatarPrimitive.Image
-      className={cn("size-full object-cover", className)}
+      className={
+        typeof className === "function"
+          ? (state) => cn("size-full object-cover", className(state))
+          : cn("size-full object-cover", className)
+      }
       data-slot="avatar-image"
       {...props}
     />
@@ -33,10 +45,18 @@ function AvatarFallback({
 }: AvatarPrimitive.Fallback.Props) {
   return (
     <AvatarPrimitive.Fallback
-      className={cn(
-        "flex size-full items-center justify-center rounded-full bg-muted",
-        className,
-      )}
+      className={
+        typeof className === "function"
+          ? (state) =>
+              cn(
+                "flex size-full items-center justify-center rounded-full bg-muted",
+                className(state),
+              )
+          : cn(
+              "flex size-full items-center justify-center rounded-full bg-muted",
+              className,
+            )
+      }
       data-slot="avatar-fallback"
       {...props}
     />

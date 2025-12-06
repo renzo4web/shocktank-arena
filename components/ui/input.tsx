@@ -1,13 +1,18 @@
 import React, { InputHTMLAttributes } from "react";
  
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   className?: string;
+  // Accept variant-like size values used by wrappers; forwarded as-is to the underlying input
+  size?: number | "sm" | "default" | "lg";
+  // Compatibility prop used by some wrappers; forwarded to DOM (no styling logic here)
+  unstyled?: boolean;
 }
  
 const Input: React.FC<InputProps> = ({
   type = "text",
   placeholder = "Enter text",
   className = "",
+  size,
   ...props
 }) => {
   return (
@@ -19,6 +24,7 @@ const Input: React.FC<InputProps> = ({
           ? "border-destructive text-destructive shadow-xs shadow-destructive"
           : ""
       } ${className}`}
+      size={typeof size === "number" ? size : undefined}
       {...props}
     />
   );

@@ -7,7 +7,11 @@ import { cn } from "@/lib/utils";
 function Fieldset({ className, ...props }: FieldsetPrimitive.Root.Props) {
   return (
     <FieldsetPrimitive.Root
-      className={cn("flex w-full max-w-64 flex-col gap-6", className)}
+      className={
+        typeof className === "function"
+          ? (state) => cn("flex w-full max-w-64 flex-col gap-6", className(state))
+          : cn("flex w-full max-w-64 flex-col gap-6", className)
+      }
       data-slot="fieldset"
       {...props}
     />
@@ -19,7 +23,11 @@ function FieldsetLegend({
 }: FieldsetPrimitive.Legend.Props) {
   return (
     <FieldsetPrimitive.Legend
-      className={cn("font-semibold", className)}
+      className={
+        typeof className === "function"
+          ? (state) => cn("font-semibold", className(state))
+          : cn("font-semibold", className)
+      }
       data-slot="fieldset-legend"
       {...props}
     />

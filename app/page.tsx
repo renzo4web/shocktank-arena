@@ -36,7 +36,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
           <div className="text-center mb-16 space-y-6">
-            <Badge variant="secondary" className="mb-4">
+            <Badge  className="mb-4">
               v1.0 Public Beta
             </Badge>
             <h2 className="text-4xl sm:text-6xl font-bold tracking-tighter mb-4 max-w-4xl mx-auto">
