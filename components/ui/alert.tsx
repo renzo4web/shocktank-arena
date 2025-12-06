@@ -1,80 +1,57 @@
+import { HtmlHTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import type * as React from "react";
-
+ 
 import { cn } from "@/lib/utils";
-
-const alertVariants = cva(
-  "relative grid w-full items-start gap-x-2 gap-y-0.5 rounded-xl border px-3.5 py-3 text-card-foreground text-sm has-[>svg]:has-data-[slot=alert-action]:grid-cols-[calc(var(--spacing)*4)_1fr_auto] has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-data-[slot=alert-action]:grid-cols-[1fr_auto] has-[>svg]:gap-x-2 [&>svg]:h-[1lh] [&>svg]:w-4",
-  {
-    defaultVariants: {
-      variant: "default",
+import { Text } from "@/components/retroui/Text";
+ 
+const alertVariants = cva("relative w-full rounded border-2 p-4", {
+  variants: {
+    variant: {
+      default: "bg-background text-foreground [&_svg]:shrink-0",
+      solid: "bg-black text-white",
     },
-    variants: {
-      variant: {
-        default:
-          "bg-transparent dark:bg-input/32 [&>svg]:text-muted-foreground",
-        error:
-          "border-destructive/32 bg-destructive/4 [&>svg]:text-destructive",
-        info: "border-info/32 bg-info/4 [&>svg]:text-info",
-        success: "border-success/32 bg-success/4 [&>svg]:text-success",
-        warning: "border-warning/32 bg-warning/4 [&>svg]:text-warning",
-      },
+    status: {
+      error: "bg-red-300 text-red-800 border-red-800",
+      success: "bg-green-300 text-green-800 border-green-800",
+      warning: "bg-yellow-300 text-yellow-800 border-yellow-800",
+      info: "bg-blue-300 text-blue-800 border-blue-800",
     },
   },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+ 
+interface IAlertProps
+  extends HtmlHTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof alertVariants> {}
+ 
+const Alert = ({ className, variant, status, ...props }: IAlertProps) => (
+  <div
+    role="alert"
+    className={cn(alertVariants({ variant, status }), className)}
+    {...props}
+  />
 );
-
-function Alert({
-  className,
-  variant,
-  ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
-  return (
-    <div
-      className={cn(alertVariants({ variant }), className)}
-      data-slot="alert"
-      role="alert"
-      {...props}
-    />
-  );
-}
-
-function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("font-medium [svg~&]:col-start-2", className)}
-      data-slot="alert-title"
-      {...props}
-    />
-  );
-}
-
-function AlertDescription({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-2.5 text-muted-foreground [svg~&]:col-start-2",
-        className,
-      )}
-      data-slot="alert-description"
-      {...props}
-    />
-  );
-}
-
-function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "flex gap-1 max-sm:col-start-2 max-sm:mt-2 sm:row-start-1 sm:row-end-3 sm:self-center sm:[[data-slot=alert-description]~&]:col-start-2 sm:[[data-slot=alert-title]~&]:col-start-2 sm:[svg~&]:col-start-2 sm:[svg~[data-slot=alert-description]~&]:col-start-3 sm:[svg~[data-slot=alert-title]~&]:col-start-3",
-        className,
-      )}
-      data-slot="alert-action"
-      {...props}
-    />
-  );
-}
-
-export { Alert, AlertTitle, AlertDescription, AlertAction };
+Alert.displayName = "Alert";
+ 
+interface IAlertTitleProps extends HtmlHTMLAttributes<HTMLHeadingElement> {}
+const AlertTitle = ({ className, ...props }: IAlertTitleProps) => (
+  <Text as="h5" className={cn(className)} {...props} />
+);
+AlertTitle.displayName = "AlertTitle";
+ 
+interface IAlertDescriptionProps
+  extends HtmlHTMLAttributes<HTMLParagraphElement> {}
+const AlertDescription = ({ className, ...props }: IAlertDescriptionProps) => (
+  <div className={cn("text-muted-foreground", className)} {...props} />
+);
+ 
+AlertDescription.displayName = "AlertDescription";
+ 
+const AlertComponent = Object.assign(Alert, {
+  Title: AlertTitle,
+  Description: AlertDescription,
+});
+ 
+export { AlertComponent as Alert, AlertTitle, AlertDescription };

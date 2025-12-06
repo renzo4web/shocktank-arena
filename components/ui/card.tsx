@@ -1,98 +1,49 @@
-import type * as React from "react";
-
 import { cn } from "@/lib/utils";
-
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+import { HTMLAttributes } from "react";
+import { Text } from "@/components/retroui/Text";
+ 
+interface ICardProps extends HTMLAttributes<HTMLDivElement> {
+  className?: string;
+}
+ 
+const Card = ({ className, ...props }: ICardProps) => {
   return (
     <div
       className={cn(
-        // Fizzy-inspired card: generous radius, subtle shadow, smooth transitions
-        "relative flex flex-col gap-6 rounded-2xl border border-border/60 bg-card py-6 text-card-foreground shadow-sm transition-shadow duration-100 ease-out hover:shadow-md dark:border-border/40 dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-black/20",
+        "inline-block border-2 rounded shadow-md transition-all hover:shadow-none bg-card",
         className,
       )}
-      data-slot="card"
       {...props}
     />
   );
-}
-
-function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
-        className,
-      )}
-      data-slot="card-header"
-      {...props}
-    />
-  );
-}
-
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        // Fizzy-style title: slightly heavier, better tracking
-        "font-semibold text-lg leading-tight tracking-tight",
-        className,
-      )}
-      data-slot="card-title"
-      {...props}
-    />
-  );
-}
-
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("text-muted-foreground text-sm", className)}
-      data-slot="card-description"
-      {...props}
-    />
-  );
-}
-
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className,
-      )}
-      data-slot="card-action"
-      {...props}
-    />
-  );
-}
-
-function CardPanel({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("px-6", className)}
-      data-slot="card-content"
-      {...props}
-    />
-  );
-}
-
-function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
-      data-slot="card-footer"
-      {...props}
-    />
-  );
-}
-
-export {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardAction,
-  CardDescription,
-  CardPanel,
-  CardPanel as CardContent,
 };
+ 
+const CardHeader = ({ className, ...props }: ICardProps) => {
+  return (
+    <div
+      className={cn("flex flex-col justify-start p-4", className)}
+      {...props}
+    />
+  );
+};
+ 
+const CardTitle = ({ className, ...props }: ICardProps) => {
+  return <Text as="h3" className={cn("mb-2", className)} {...props} />;
+};
+ 
+const CardDescription = ({ className, ...props }: ICardProps) => (
+  <p className={cn("text-muted-foreground", className)} {...props} />
+);
+ 
+const CardContent = ({ className, ...props }: ICardProps) => {
+  return <div className={cn("p-4", className)} {...props} />;
+};
+ 
+const CardComponent = Object.assign(Card, {
+  Header: CardHeader,
+  Title: CardTitle,
+  Description: CardDescription,
+  Content: CardContent,
+});
+ 
+export { CardComponent as Card , CardHeader, CardTitle, CardDescription, CardContent };

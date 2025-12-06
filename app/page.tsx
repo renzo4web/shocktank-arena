@@ -99,10 +99,6 @@ export default function Home() {
 
           {/* The Game Phases */}
           <div className="mb-24">
-            <div className="text-center mb-12">
-              <h3 className="text-3xl font-bold tracking-tight mb-4">How It Works</h3>
-              <p className="text-muted-foreground">From world creation to final judgment</p>
-            </div>
             <HowItWorksCarousel />
           </div>
 

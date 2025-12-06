@@ -89,12 +89,13 @@ export function HowItWorksCarousel() {
               key={step.id}
               onClick={() => setActiveStep(index)}
               className={`
-                relative flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded-lg sm:rounded-xl 
+                relative flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded shadow-md border-2
                 transition-all duration-300 min-h-[80px] sm:min-h-[120px]
                 ${isActive
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                  : "bg-card hover:bg-accent/50 text-muted-foreground hover:text-foreground border border-border"
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-muted-foreground hover:text-foreground hover:shadow-none hover:bg-accent/40 border-border"
                 }
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
               `}
             >
               {/* Progress bar */}

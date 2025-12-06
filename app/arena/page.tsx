@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Zap, Users, TrendingUp, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { z } from 'zod';
+import { Text } from '@/components/retroui/Text';
 
 const worldScenarioSchema = z.object({
   technology: z.string(),
@@ -16,7 +17,7 @@ const worldScenarioSchema = z.object({
 });
 
 export default function ArenaPage() {
-  const { object, submit, isLoading, error } = useObject({
+  const { object : worldScenario, submit, isLoading, error } = useObject({
     api: '/api/arena',
     schema: worldScenarioSchema,
   });
@@ -28,20 +29,14 @@ export default function ArenaPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Home
-                </Button>
-              </Link>
-              <div className="flex items-center gap-2">
+              <Link href={"/"} className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Zap className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">ShockTank Arena</h1>
-              </div>
+                <Text as="h5">ShockTank Arena</Text>
+              </Link>
             </div>
-            <Badge variant="secondary">World Builder</Badge>
+            <Badge>World Builder</Badge>
           </div>
         </div>
       </header>
@@ -49,7 +44,7 @@ export default function ArenaPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Generate Button */}
-          <div className="text-center">
+          <div className="text-center items-center">
             <h2 className="text-3xl font-bold tracking-tight mb-4">
               Create Your World
             </h2>
@@ -58,9 +53,10 @@ export default function ArenaPage() {
             </p>
             <Button
               size="lg"
+              hidden={!!worldScenario}
               onClick={() => submit('Generate a new world scenario')}
-              disabled={isLoading}
-              className="gap-2"
+              disabled={isLoading || !!worldScenario}
+              className="gap-2 m-auto"
             >
               {isLoading ? 'Building World...' : 'Generate World Scenario'}
               <Zap className="w-4 h-4" />
@@ -68,7 +64,7 @@ export default function ArenaPage() {
           </div>
 
           {/* World Display */}
-          {object && (
+          {worldScenario && (
             <div className="space-y-6">
               <Card>
                 <CardHeader>
@@ -77,9 +73,9 @@ export default function ArenaPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-lg text-center text-muted-foreground">
-                    {object.description}
-                  </p>
+                  <Text className="font-sans text-base">
+                    {worldScenario.description}
+                  </Text>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Card>
@@ -91,7 +87,7 @@ export default function ArenaPage() {
                       </CardHeader>
                       <CardContent>
                         <p className="text-muted-foreground">
-                          {object.technology}
+                          {worldScenario.technology}
                         </p>
                       </CardContent>
                     </Card>
@@ -105,7 +101,7 @@ export default function ArenaPage() {
                       </CardHeader>
                       <CardContent>
                         <p className="text-muted-foreground">
-                          {object.socialConflict}
+                          {worldScenario.socialConflict}
                         </p>
                       </CardContent>
                     </Card>
@@ -118,15 +114,15 @@ export default function ArenaPage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-muted-foreground">
-                          {object.culturalTrend}
-                        </p>
+                        <Text className="font-sans text-base">
+                          {worldScenario.culturalTrend}
+                        </Text>
                       </CardContent>
                     </Card>
                   </div>
 
                   <div className="text-center pt-4">
-                    <Button size="lg" variant="outline">
+                    <Button size="lg" className='m-auto' >
                       Start Entrepreneur Phase
                     </Button>
                   </div>
@@ -136,7 +132,7 @@ export default function ArenaPage() {
           )}
 
           {/* Loading State */}
-          {isLoading && !object && !error && (
+          {isLoading && !worldScenario && !error && (
             <Card>
               <CardContent className="py-12">
                 <div className="text-center space-y-4">
@@ -164,8 +160,7 @@ export default function ArenaPage() {
                 </p>
                 <Button
                   onClick={() => submit('Generate a new world scenario')}
-                  variant="outline"
-                  className="gap-2"
+                  className="gap-2 w-full m-auto"
                 >
                   Try Again
                   <Zap className="w-4 h-4" />
