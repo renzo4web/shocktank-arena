@@ -6,9 +6,12 @@ interface ICardProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
  
-const Card = ({ className, ...props }: ICardProps) => {
+import React, { forwardRef } from "react";
+
+const Card = forwardRef<HTMLDivElement, ICardProps>(({ className, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       className={cn(
         "inline-block border-2 rounded shadow-md transition-all hover:shadow-none bg-card",
         className,
@@ -16,7 +19,8 @@ const Card = ({ className, ...props }: ICardProps) => {
       {...props}
     />
   );
-};
+});
+Card.displayName = "Card";
  
 const CardHeader = ({ className, ...props }: ICardProps) => {
   return (

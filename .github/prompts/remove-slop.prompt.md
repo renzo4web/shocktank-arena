@@ -1,0 +1,1 @@
+/Users/turbopila/lab/automaton/.agents/commands/remove-slop.md
