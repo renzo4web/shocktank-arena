@@ -22,9 +22,6 @@ export default function Home() {
               <h1 className="text-xl font-bold tracking-tight">ShockTank Arena</h1>
             </div>
             <nav className="flex gap-4">
-              <Button variant="ghost" size="sm">
-                About
-              </Button>
               <Button size="sm" className="gap-2">
                 Play Now <ArrowRight className="w-4 h-4" />
               </Button>

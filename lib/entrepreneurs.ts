@@ -9,15 +9,15 @@ export interface Entrepreneur {
 export const ENTREPRENEURS: Entrepreneur[] = [
   {
     id: 'entrepreneur-1',
-    name: 'Grok-4',
-    model: 'xai/grok-4-fast-reasoning',
+    name: 'Grok-4.1',
+    model: 'xai/grok-4.1-fast-reasoning',
     color: 'bg-blue-500',
     personality: 'You are a highly analytical and rapid-reasoning entrepreneur. You focus on efficiency, scalability, and cutting-edge tech. Your tone is direct and confident.',
   },
   {
     id: 'entrepreneur-2',
-    name: 'DeepSeek V3',
-    model: 'deepseek/deepseek-v3.2-thinking',
+    name: 'GLM 4.6',
+    model: 'zai/glm-4.6',
     color: 'bg-purple-500',
     personality: 'You are a deep strategic thinker. You focus on long-term impact, structural changes, and complex systems. Your tone is thoughtful and visionary.',
   },

@@ -70,7 +70,20 @@ export function PitchCard({ entrepreneur, pitch, isLoading }: PitchCardProps) {
             </div>
           </>
         )}
+        
+        {/* Check for pivotReasoning property which might exist if the pitch object is actually a PivotPitch */}
+        {pitch && 'pivotReasoning' in pitch && (pitch as any).pivotReasoning && (
+             <div className="mt-4 pt-4 border-t border-dashed border-primary/30 bg-primary/5 -mx-6 px-6 pb-2">
+                <h4 className="text-sm font-bold text-primary flex items-center gap-2 mb-1">
+                    <Target className="w-4 h-4" /> Pivot Strategy
+                </h4>
+                <p className="text-sm text-primary/80 font-medium italic">
+                    "{(pitch as any).pivotReasoning}"
+                </p>
+            </div>
+        )}
       </CardContent>
     </Card>
+
   );
 }

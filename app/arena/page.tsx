@@ -11,19 +11,40 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Zap, Users, TrendingUp, ArrowLeft, Trophy, Star, Award, BarChart3, ArrowRight } from 'lucide-react';
+import { Zap, Users, TrendingUp, ArrowLeft, Trophy, Star, Award, BarChart3, ArrowRight, AlertTriangle, Lock, RefreshCw, Smartphone, Globe, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { z } from 'zod';
 import { Text } from '@/components/retroui/Text';
 import { useState } from 'react';
 import { PitchCard } from '@/components/pitch-card';
 import { usePitchGeneration } from '@/hooks/use-pitch-generation';
+import { usePivotGeneration } from '@/hooks/use-pivot-generation';
 import { judgmentSchema } from '../api/judge/schema';
+import { shockSchema } from '../api/shock/schema';
 import { ENTREPRENEURS } from '@/lib/entrepreneurs';
 import { JUDGES, JudgePersona } from '@/lib/judges';
 import { Badge } from '@/components/ui/badge';
 
-
+const SHOCK_OPTIONS = [
+   { 
+      id: 'crash', 
+      title: 'Global Market Crash', 
+      description: 'The financial system collapses, funding dries up.',
+      icon: TrendingUp // actually trending down logically but visual metaphor
+   },
+   { 
+      id: 'reg-hammer', 
+      title: 'Regulatory Hammer', 
+      description: 'Governments impose strict, suffocating bans.',
+      icon: Lock 
+   },
+   { 
+      id: 'tech-breakthrough', 
+      title: 'AGI Breakthrough', 
+      description: 'Competitors just got 1000x smarter overnight.',
+      icon: Zap 
+   }
+];
 
 const worldScenarioSchema = z.object({
   technology: z.string(),
@@ -34,7 +55,8 @@ const worldScenarioSchema = z.object({
 
 
 export default function ArenaPage() {
-  const [phase, setPhase] = useState<'world' | 'pitches' | 'judgment'>('world');
+  const [phase, setPhase] = useState<'world' | 'pitches' | 'shock' | 'pivot' | 'judgment'>('world');
+  const [selectedShock, setSelectedShock] = useState<string | null>(null);
 
 
   const { object: worldScenario, submit: submitWorld, isLoading: isWorldLoading, error: worldError } = useObject({
@@ -43,16 +65,25 @@ export default function ArenaPage() {
   });
 
   const { pitches, generatePitches } = usePitchGeneration();
+  const { pivots, generatePivots } = usePivotGeneration();
   
   const { object: judgment, submit: submitJudgment, isLoading: isJudgmentLoading } = useObject({
     api: '/api/judge',
     schema: judgmentSchema,
+  });
+
+  const { object: shockImpact, submit: submitShock, isLoading: isShockLoading } = useObject({
+    api: '/api/shock',
+    schema: shockSchema,
   });
   
   const isGeneratingWorld = isWorldLoading && !worldScenario && !worldError;
 
   // Check if all pitches are finished generating
   const arePitchesReady = pitches.length === 3 && pitches.every(p => !p.isLoading && p.object);
+  
+  // Check if all pivots are finished
+  const arePivotsReady = pivots.length === 3 && pivots.every(p => !p.isLoading && p.object);
 
   const handleSimulatePitches = () => {
     if (!worldScenario) return;
@@ -60,11 +91,44 @@ export default function ArenaPage() {
     generatePitches(worldScenario);
   };
 
+  const handleSelectShock = (shockTitle: string) => {
+     if (!worldScenario) return;
+     setSelectedShock(shockTitle);
+     setPhase('shock');
+     submitShock({ worldScenario, selectedShock: shockTitle });
+      
+      // Scroll to shock section after a short delay
+     setTimeout(() => {
+        const shockSection = document.getElementById('shock-section');
+        if (shockSection) {
+            shockSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 100);
+  };
+
+  const handleTriggerPivot = () => {
+    if (!worldScenario || !shockImpact || !selectedShock) return;
+
+    setPhase('pivot');
+    generatePivots(worldScenario, selectedShock, shockImpact, pitches);
+    
+    // Smooth scroll to pivot section
+    setTimeout(() => {
+        const pivotSection = document.getElementById('pivot-section');
+        if (pivotSection) {
+            pivotSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 100);
+  };
+  
   const handleJudgePitches = () => {
     if (!worldScenario) return;
     
-    // Extract completed pitches
-    const validPitches = pitches
+    // Use PIVOTS if available, otherwise pitches (though flow enforces pivots now)
+    const sourcePitches = arePivotsReady ? pivots : pitches;
+
+    // Extract completed pitches/pivots
+    const validPitches = sourcePitches
       .filter(p => p.object)
       .map(p => ({
         entrepreneurId: p.entrepreneur.id,
@@ -74,7 +138,12 @@ export default function ArenaPage() {
     if (validPitches.length < 3) return; // simple check
 
     setPhase('judgment');
-    submitJudgment({ worldScenario, pitches: validPitches });
+    submitJudgment({ 
+        worldScenario, 
+        pitches: validPitches, // passing pivots here
+        shock: selectedShock, // pass shock context
+        shockImpact // pass shock impact context
+    });
     
     // Smooth scroll to the verdict section
     setTimeout(() => {
@@ -233,20 +302,146 @@ export default function ArenaPage() {
                 ))}
               </div>
               
-              {arePitchesReady && (
+              {/* Show Pivot Button ONLY if we haven't started pivoting yet */}
+              {arePitchesReady && phase === 'pitches' && (
                   <div className="flex flex-col items-center gap-4 pt-8 animate-in fade-in zoom-in duration-500">
-                     <div className="flex gap-4 items-center bg-card p-4 rounded-lg border shadow-sm">
-
+                     <div className="flex flex-col items-center gap-6 p-8 bg-muted/30 rounded-xl border-2 border-dashed">
+                        <div className="text-center space-y-2">
+                           <h3 className="text-xl font-bold">Inject Chaos into the System</h3>
+                           <p className="text-muted-foreground max-w-md">
+                              The startup world is unpredictable. Introduce a "Shock" event to test their resilience.
+                           </p>
+                        </div>
                         
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
+                           {SHOCK_OPTIONS.map((shock) => (
+                              <Button
+                                 key={shock.id}
+                                 variant="outline"
+                                 className="h-auto py-6 px-4 flex flex-col gap-2 hover:bg-destructive/10 hover:border-destructive/50 transition-all text-wrap text-center"
+                                 onClick={() => handleSelectShock(shock.title)}
+                                 disabled={isShockLoading}
+                              >
+                                 <shock.icon className="w-8 h-8 text-destructive mb-1" />
+                                 <span className="font-bold text-lg">{shock.title}</span>
+                                 <span className="text-xs text-muted-foreground font-normal">{shock.description}</span>
+                              </Button>
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+              )}
+              {!arePitchesReady && pitches.some(p => p.isLoading) && (
+                 <div className="flex justify-center pt-8">
+                    <p className="text-sm text-muted-foreground animate-pulse flex items-center gap-2">
+                       <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce" />
+                       Waiting for all entrepreneurs to finish their pitches...
+                    </p>
+                 </div>
+              )}
+            </div>
+          )}
 
+          {/* Phase 3: The Shock */}
+          {(phase === 'shock' || phase === 'pivot' || phase === 'judgment') && (
+             <div id="shock-section" className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 scroll-mt-24 pt-8 border-t-2 border-dashed">
+                <div className="text-center">
+                   <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 text-destructive">
+                      <Zap className="w-8 h-8" />
+                   </div>
+                   <h2 className="text-3xl font-bold tracking-tight mb-4 text-destructive">
+                      Market Shock!
+                   </h2>
+                   
+                    {isShockLoading && !shockImpact && (
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="animate-spin w-6 h-6 border-2 border-destructive border-t-transparent rounded-full"></div>
+                            <p className="text-sm text-muted-foreground">Destabilizing the economy...</p>
+                        </div>
+                    )}
+                </div>
 
-
+                {shockImpact && (
+                   <Card className="border-destructive/50 bg-destructive/5 shadow-lg w-full">
+                      <CardHeader>
+                         <CardTitle className="text-2xl text-center flex items-center justify-center gap-3">
+                            <AlertTriangle className="w-6 h-6 text-destructive" />
+                            New World Order
+                         </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                         <p className="text-lg font-medium text-center max-w-3xl mx-auto leading-relaxed">
+                            {shockImpact.impactDescription}
+                         </p>
                          
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div className="bg-background/80 p-4 rounded-lg border border-destructive/20">
+                               <h4 className="font-bold text-destructive mb-2 flex items-center gap-2">
+                                  <TrendingUp className="w-4 h-4 rotate-180" />
+                                  Market Conditions
+                               </h4>
+                               <p className="text-sm text-muted-foreground">{shockImpact.changedMarketConditions}</p>
+                            </div>
+                            <div className="bg-background/80 p-4 rounded-lg border border-destructive/20">
+                               <h4 className="font-bold text-destructive mb-2 flex items-center gap-2">
+                                  <Lock className="w-4 h-4" />
+                                  New Constraints
+                               </h4>
+                               <p className="text-sm text-muted-foreground">{shockImpact.newConstraints}</p>
+                            </div>
+                         </div>
+
+                         {phase === 'shock' && (
+                            <div className="flex justify-center pt-6">
+                               <Button 
+                                  size="lg" 
+                                  className="gap-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  onClick={handleTriggerPivot}
+                               >
+                                  <RefreshCw className="w-4 h-4" />
+                                  Force Entrepreneurs to Pivot
+                               </Button>
+                            </div>
+                         )}
+                      </CardContent>
+                   </Card>
+                )}
+             </div>
+          )}
+
+          {/* Phase 4: The Pivot */}
+          {(phase === 'pivot' || phase === 'judgment') && (
+             <div id="pivot-section" className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 scroll-mt-24 pt-8 border-t-2 border-dashed">
+                 <div className="text-center">
+                   <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary">
+                      <RefreshCw className="w-8 h-8" />
+                   </div>
+                   <h2 className="text-3xl font-bold tracking-tight mb-4">
+                      The Pivot
+                   </h2>
+                   <p className="text-muted-foreground mb-6">
+                      Entrepreneurs must now adapt their strategy to survive the {selectedShock}.
+                   </p>
+                 </div>
+
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {pivots.map((pivotData) => (
+                      <PitchCard
+                        key={pivotData.entrepreneur.id}
+                        entrepreneur={pivotData.entrepreneur}
+                        pitch={pivotData.object as any} // cast to any to avoid strict type checks since we extended it
+                        isLoading={pivotData.isLoading}
+                      />
+                    ))}
+                 </div>
+
+                  {arePivotsReady && phase === 'pivot' && (
+                      <div className="flex justify-center pt-8 animate-in fade-in zoom-in duration-500">
                           <Button 
                             size="lg" 
                             onClick={handleJudgePitches}
                             disabled={isJudgmentLoading} 
-                            className="gap-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-bold border-2 border-yellow-950 shadow-[4px_4px_0px_0px_rgba(66,32,6,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(66,32,6,1)] transition-all"
+                            className="gap-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-bold border-2 border-yellow-950 shadow-[4px_4px_0px_0px_rgba(66,32,6,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(66,32,6,1)] transition-all scale-125"
                           >
                             {isJudgmentLoading ? (
                                 <>
@@ -260,18 +455,9 @@ export default function ArenaPage() {
                                 </>
                             )}
                           </Button>
-                     </div>
-                  </div>
-              )}
-              {!arePitchesReady && pitches.some(p => p.isLoading) && (
-                 <div className="flex justify-center pt-8">
-                    <p className="text-sm text-muted-foreground animate-pulse flex items-center gap-2">
-                       <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce" />
-                       Waiting for all entrepreneurs to finish their pitches...
-                    </p>
-                 </div>
-              )}
-            </div>
+                      </div>
+                  )}
+             </div>
           )}
 
           {/* Phase 3: Judgment */}
@@ -460,7 +646,7 @@ export default function ArenaPage() {
                                       </div>
                                       
                                       <CardTitle className="text-4xl md:text-6xl font-black text-foreground mb-2 tracking-tight">
-                                        {winningPitch.object.name}
+                                        {winningPitch.object?.startupName || "Unknown Startup"}
                                       </CardTitle>
                                       
                                       <div className="flex items-center justify-center gap-2 text-muted-foreground mt-2">
@@ -477,7 +663,7 @@ export default function ArenaPage() {
                                       </p>
                                       
                                       <div className="pt-2">
-                                          <Button size="lg" className="w-full md:w-auto font-bold" onClick={() => {
+                                          <Button size="lg" className="w-full mx-auto md:w-auto font-bold" onClick={() => {
                                               setPhase('world');
                                               window.location.reload(); 
                                           }}>
