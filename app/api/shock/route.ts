@@ -22,6 +22,7 @@ export async function POST(req: Request) {
         schema: shockSchema,
         schemaName: 'ShockImpact',
         schemaDescription: 'The impact of a shock event on the world scenario',
+        mode: 'json',
     });
 
     return result.toTextStreamResponse();

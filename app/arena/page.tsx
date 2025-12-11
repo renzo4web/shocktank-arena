@@ -380,19 +380,33 @@ export default function ArenaPage() {
                                   <TrendingUp className="w-4 h-4 rotate-180" />
                                   Market Conditions
                                </h4>
-                               <p className="text-sm text-muted-foreground">{shockImpact.changedMarketConditions}</p>
+                               {(!shockImpact.changedMarketConditions && isShockLoading) ? (
+                                  <div className="flex items-center gap-2 text-muted-foreground/50 text-sm py-1 animate-pulse">
+                                     <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                     <span>Analyzing market shifts...</span>
+                                  </div>
+                               ) : (
+                                  <p className="text-sm text-muted-foreground">{shockImpact.changedMarketConditions}</p>
+                               )}
                             </div>
                             <div className="bg-background/80 p-4 rounded-lg border border-destructive/20">
                                <h4 className="font-bold text-destructive mb-2 flex items-center gap-2">
                                   <Lock className="w-4 h-4" />
                                   New Constraints
                                </h4>
-                               <p className="text-sm text-muted-foreground">{shockImpact.newConstraints}</p>
+                               {(!shockImpact.newConstraints && isShockLoading) ? (
+                                  <div className="flex items-center gap-2 text-muted-foreground/50 text-sm py-1 animate-pulse">
+                                      <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                      <span>Calculating new rules...</span>
+                                  </div>
+                               ) : (
+                                  <p className="text-sm text-muted-foreground">{shockImpact.newConstraints}</p>
+                               )}
                             </div>
                          </div>
 
-                         {phase === 'shock' && (
-                            <div className="flex justify-center pt-6">
+                         {phase === 'shock' && !isShockLoading && (
+                            <div className="flex justify-center pt-6 animate-in fade-in zoom-in duration-300">
                                <Button 
                                   size="lg" 
                                   className="gap-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"

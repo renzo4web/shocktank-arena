@@ -18,6 +18,7 @@ export async function POST(req: Request) {
     schema: worldScenarioSchema,
     schemaName: 'WorldScenario',
     schemaDescription: 'A unique world scenario for the ShockTank Arena simulation',
+    mode: 'json',
   });
 
   return result.toTextStreamResponse();

@@ -5,10 +5,9 @@ import { JUDGES } from '@/lib/judges';
 export const maxDuration = 60;
 
 const JUDGE_MODELS = [
-  'minimax-m2',
-  'nova-2-lite',
-  'gpt-5-mini',
-  'kimi-k2-thinking'
+  'google/gemini-2.5-flash-lite',
+  'openai/gpt-4.1-mini',
+  'xai/grok-4-fast-non-reasoning'
 ];
 
 export async function POST(req: Request) {
@@ -58,6 +57,7 @@ export async function POST(req: Request) {
       
       Be creative, funny, but insightful. Think "Silicon Valley" meets "Shark Tank" meets "Black Mirror".
     `,
+    mode: 'json',
   });
 
   return result.toTextStreamResponse();
