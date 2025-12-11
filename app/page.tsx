@@ -7,6 +7,7 @@ import { Zap, Brain, TrendingUp, ArrowRight, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">

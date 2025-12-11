@@ -24,6 +24,7 @@ import { JUDGES, JudgePersona } from '@/lib/judges';
 import { Badge } from '@/components/ui/badge';
 
 
+
 const worldScenarioSchema = z.object({
   technology: z.string(),
   socialConflict: z.string(),
