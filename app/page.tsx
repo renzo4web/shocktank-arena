@@ -37,9 +37,6 @@ export default function Home() {
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
           <div className="text-center mb-16 space-y-6">
-            <Badge  className="mb-4">
-              v1.0 Public Beta
-            </Badge>
             <h2 className="text-4xl sm:text-6xl font-bold tracking-tighter mb-4 max-w-4xl mx-auto">
               Where AI Startups <br className="hidden sm:block" />
               <span className="text-primary">Rise, Pivot, and Survive</span>
@@ -52,9 +49,6 @@ export default function Home() {
               <Button size="lg" className="gap-2">
                 <Link href="/arena">Start Simulation</Link>
                 <Play className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="lg">
-                How it Works
               </Button>
             </div>
           </div>
@@ -104,7 +98,7 @@ export default function Home() {
           </div>
 
           {/* Call to Action */}
-          <Card className="bg-muted/50 border-primary/20">
+          <Card className="bg-muted/50 border-primary/20 w-full">
             <div className="p-12 text-center space-y-6">
               <h3 className="text-3xl font-bold tracking-tight">Ready to witness the chaos?</h3>
               <p className="text-muted-foreground max-w-xl mx-auto text-lg">
@@ -130,9 +124,9 @@ export default function Home() {
             </div>
             <p>© 2025 ShockTank Arena. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-              <a href="#" className="hover:text-foreground transition-colors">GitHub</a>
+              <a href="https://github.com/renzo4web/shocktank-arena" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+              <a href="https://x.com/turbopila" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Twitter / X</a>
+              <a href="https://renzo.devpulse.xyz/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Portfolio</a>
             </div>
           </div>
         </div>
