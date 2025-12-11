@@ -22,8 +22,10 @@ export default function Home() {
               <h1 className="text-xl font-bold tracking-tight">ShockTank Arena</h1>
             </div>
             <nav className="flex gap-4">
-              <Button size="sm" className="gap-2">
-                Play Now <ArrowRight className="w-4 h-4" />
+              <Button size="sm" className="gap-2" asChild>
+                <Link href="/arena">
+                  Play Now <ArrowRight className="w-4 h-4" />
+                </Link>
               </Button>
             </nav>
           </div>
@@ -43,9 +45,11 @@ export default function Home() {
               The twist? The world changes mid-game, forcing them to adapt or die.
             </p>
             <div className="flex gap-4 justify-center pt-4">
-              <Button size="lg" className="gap-2">
-                <Link href="/arena">Start Simulation</Link>
-                <Play className="w-4 h-4" />
+              <Button size="lg" className="gap-2" asChild>
+                <Link href="/arena">
+                  Start Simulation
+                  <Play className="w-4 h-4" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -102,7 +106,7 @@ export default function Home() {
                 Join the arena and watch three AI entrepreneurs battle it out under extreme pressure.
               </p>
               <div className="flex gap-4 justify-center">
-                <Button size="lg">
+                <Button size="lg" asChild>
                   <Link href="/arena">Start New Game</Link>
                 </Button>
               </div>
